@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>APEX — Train Beyond Limits</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;1,300&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #080808;
+      --white: #f0ede8;
+      --red: #d93025;
+      --steel: #1a1a1a;
+      --mid: #2e2e2e;
+      --text-muted: #888;
+      --gap: clamp(40px, 6vw, 90px);
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'Barlow', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; background: linear-gradient(to bottom, rgba(8,8,8,0.97), transparent); }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.2em; color: var(--white); text-decoration: none; }
+    .logo span { color: var(--red); }
+    nav ul { display: flex; gap: 36px; list-style: none; }
+    nav a { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    nav a:hover { color: var(--white); }
+    .nav-cta { background: var(--red); color: var(--white) !important; padding: 10px 22px; font-weight: 600 !important; }
+    .nav-cta:hover { background: #f03327 !important; }
+
+    /* HERO */
+    .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 40px 70px; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: linear-gradient(to top, #080808 30%, transparent 80%), linear-gradient(160deg, rgba(217,48,37,0.15) 0%, transparent 50%), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1800&q=80') center/cover no-repeat; transform: scale(1.04); animation: heroScale 14s ease-in-out infinite alternate; }
+    @keyframes heroScale { from { transform: scale(1.04); } to { transform: scale(1.0); } }
+    .hero-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--red); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.7s 0.3s forwards; }
+    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 14vw, 14rem); line-height: 0.88; letter-spacing: 0.02em; max-width: 900px; opacity: 0; animation: fadeUp 0.8s 0.5s forwards; }
+    .hero h1 em { font-style: normal; color: var(--red); display: block; }
+    .hero-sub { margin-top: 28px; font-size: 1.05rem; color: var(--text-muted); max-width: 420px; line-height: 1.7; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+    .hero-actions { margin-top: 36px; display: flex; gap: 16px; align-items: center; opacity: 0; animation: fadeUp 0.8s 1.0s forwards; }
+
+    .btn-primary { background: var(--red); color: var(--white); font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; padding: 16px 36px; text-decoration: none; display: inline-block; border: none; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+    .btn-primary:hover { background: #f03327; transform: translateY(-2px); }
+    .btn-ghost { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; transition: color 0.2s; }
+    .btn-ghost::after { content: '→'; font-size: 1rem; transition: transform 0.2s; }
+    .btn-ghost:hover { color: var(--white); }
+    .btn-ghost:hover::after { transform: translateX(5px); }
+
+    /* TICKER */
+    .ticker { background: var(--red); padding: 14px 0; overflow: hidden; white-space: nowrap; }
+    .ticker-inner { display: inline-block; animation: ticker 24s linear infinite; }
+    .ticker-inner span { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.18em; padding: 0 40px; color: var(--white); }
+    .ticker-inner span::before { content: '•'; margin-right: 40px; opacity: 0.5; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    section { padding: var(--gap) 40px; }
+    .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+    h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 6rem); letter-spacing: 0.03em; line-height: 1; }
+
+    /* STATS */
+    .stats { background: var(--steel); display: grid; grid-template-columns: repeat(4, 1fr); padding: 0; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a; }
+    .stat-item { padding: 50px 40px; border-right: 1px solid #2a2a2a; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 5vw, 5.5rem); line-height: 1; }
+    .stat-num span { color: var(--red); }
+    .stat-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); margin-top: 8px; }
+
+    /* PROGRAMS */
+    .programs-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; }
+    .programs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .program-card { position: relative; aspect-ratio: 3/4; overflow: hidden; cursor: pointer; }
+    .program-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5) saturate(0.6); transition: filter 0.5s, transform 0.6s; }
+    .program-card:hover img { filter: brightness(0.35) saturate(0.4); transform: scale(1.06); }
+    .program-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 30px; background: linear-gradient(to top, rgba(8,8,8,0.95), transparent); }
+    .program-tag { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--red); display: block; margin-bottom: 8px; }
+    .program-name { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 0.05em; line-height: 1; }
+    .program-desc { font-size: 0.85rem; color: #aaa; margin-top: 10px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.4s; opacity: 0; }
+    .program-card:hover .program-desc { max-height: 80px; opacity: 1; }
+
+    /* FEATURE */
+    .feature-split { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .feature-img img { width: 100%; aspect-ratio: 4/5; object-fit: cover; filter: saturate(0.5); }
+    .feature-img { position: relative; }
+    .feature-img::before { content: ''; position: absolute; top: -20px; left: -20px; width: 60%; height: 60%; border: 2px solid var(--red); z-index: -1; }
+    .feature-content h2 { margin-bottom: 24px; }
+    .feature-content p { color: var(--text-muted); line-height: 1.8; font-size: 1rem; margin-bottom: 16px; }
+    .features-list { margin: 32px 0; display: flex; flex-direction: column; gap: 14px; }
+    .feat { display: flex; gap: 16px; align-items: flex-start; }
+    .feat-icon { color: var(--red); font-size: 1.2rem; margin-top: 2px; flex-shrink: 0; }
+    .feat-text { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; letter-spacing: 0.04em; }
+    .feat-sub { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* TESTIMONIALS */
+    .testimonials { background: var(--steel); }
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 50px; }
+    .testi-card { background: var(--mid); padding: 40px; }
+    .testi-rating { color: var(--red); font-size: 0.9rem; letter-spacing: 4px; margin-bottom: 20px; }
+    .testi-quote { font-family: 'Barlow Condensed', sans-serif; font-style: italic; font-size: 1.15rem; line-height: 1.6; color: var(--white); margin-bottom: 28px; }
+    .testi-author { display: flex; align-items: center; gap: 14px; }
+    .testi-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; filter: saturate(0.3); }
+    .testi-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .testi-role { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* ══════════════════════════════════════
+       FREE TRIAL WORKOUT PLAYER
+    ══════════════════════════════════════ */
+    #trial { background: var(--steel); }
+    .trial-wrapper { display: grid; grid-template-columns: 1fr 1.3fr; gap: 70px; align-items: start; }
+    .trial-intro h2 { margin-bottom: 16px; }
+    .trial-intro p { color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; font-size: 0.95rem; }
+    .trial-perks { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .trial-perks li { font-family: 'Barlow Condensed', sans-serif; font-size: 0.95rem; letter-spacing: 0.04em; color: var(--white); display: flex; gap: 10px; align-items: flex-start; }
+    .trial-perks li::before { content: '◆'; color: var(--red); font-size: 0.65rem; margin-top: 4px; flex-shrink: 0; }
+
+    .workout-player { background: var(--black); border: 1px solid #222; }
+    .wp-header { padding: 22px 28px; border-bottom: 1px solid #1e1e1e; display: flex; justify-content: space-between; align-items: center; }
+    .wp-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.12em; }
+    .wp-badge { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; background: rgba(217,48,37,0.12); border: 1px solid var(--red); color: var(--red); padding: 4px 12px; }
+    .wp-prog-wrap { height: 3px; background: #1a1a1a; }
+    .wp-prog-bar { height: 3px; background: var(--red); width: 0%; transition: width 0.6s ease; }
+
+    .wp-exercise { padding: 28px; display: none; }
+    .wp-exercise.active { display: block; }
+    .wp-ex-num { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+    .wp-ex-name { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; line-height: 1; letter-spacing: 0.04em; margin-bottom: 5px; }
+    .wp-ex-detail { font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 22px; }
+
+    .wp-timer-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 22px; position: relative; }
+    .wp-svg { transform: rotate(-90deg); display: block; }
+    .wp-ring-bg { fill: none; stroke: #1e1e1e; stroke-width: 7; }
+    .wp-ring-fg { fill: none; stroke: var(--red); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear; }
+    .wp-timer-inner { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+    .wp-countdown { font-family: 'Bebas Neue', sans-serif; font-size: 3.2rem; letter-spacing: 0.04em; line-height: 1; }
+    .wp-countdown-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+
+    .wp-tip { background: #111; border-left: 2px solid var(--red); padding: 12px 15px; font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px; }
+    .wp-tip strong { color: var(--white); font-weight: 400; font-family: 'Barlow Condensed', sans-serif; }
+
+    .wp-controls { display: flex; gap: 8px; }
+    .wp-btn { flex: 1; padding: 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; border: 1px solid #2e2e2e; background: transparent; color: var(--white); transition: all 0.2s; }
+    .wp-btn:hover { border-color: var(--white); }
+    .wp-btn.go { background: var(--red); border-color: var(--red); }
+    .wp-btn.go:hover { background: #f03327; }
+    .wp-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .wp-footer { border-top: 1px solid #1e1e1e; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; }
+    .wp-dots { display: flex; gap: 6px; }
+    .wp-dot { width: 8px; height: 8px; border-radius: 50%; background: #222; transition: background 0.3s; }
+    .wp-dot.done { background: var(--red); }
+    .wp-dot.current { background: var(--white); }
+    .wp-status { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+
+    .wp-done { display: none; padding: 44px 28px; text-align: center; }
+    .wp-done.active { display: block; }
+    .wp-done-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .wp-done h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; color: var(--red); margin-bottom: 10px; }
+    .wp-done p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 26px; }
+    .wp-done-actions { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+
+    /* ══════════════════════════════════════
+       PRICING
+    ══════════════════════════════════════ */
+    #pricing { background: var(--black); }
+    .pricing-top { text-align: center; margin-bottom: 14px; }
+    .pricing-top h2 { margin-bottom: 12px; }
+    .pricing-top p { color: var(--text-muted); font-size: 1rem; max-width: 460px; margin: 0 auto 32px; line-height: 1.7; }
+
+    .billing-toggle { display: inline-flex; background: var(--steel); border: 1px solid #2a2a2a; padding: 5px; margin-bottom: 52px; }
+    .tog { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 9px 22px; cursor: pointer; color: var(--text-muted); transition: all 0.2s; user-select: none; }
+    .tog.on { background: var(--red); color: var(--white); }
+    .save-tag { font-size: 0.68rem; background: rgba(217,48,37,0.15); border: 1px solid rgba(217,48,37,0.4); color: var(--red); padding: 2px 8px; margin-left: 6px; letter-spacing: 0.12em; }
+
+    .plan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .plan { background: var(--steel); padding: 42px 34px; position: relative; transition: transform 0.3s; border: 1px solid transparent; }
+    .plan:hover { transform: translateY(-5px); }
+    .plan.hot { background: var(--mid); border-color: var(--red); }
+    .plan-pop { position: absolute; top: -1px; right: 26px; background: var(--red); font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; padding: 5px 12px; }
+    .plan-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; letter-spacing: 0.1em; margin-bottom: 7px; }
+    .plan-desc { font-size: 0.83rem; color: var(--text-muted); margin-bottom: 26px; line-height: 1.6; }
+    .plan-strike { font-family: 'Barlow Condensed', sans-serif; font-size: 0.83rem; color: #555; text-decoration: line-through; min-height: 18px; margin-bottom: 2px; }
+    .plan-price-row { display: flex; align-items: baseline; gap: 3px; margin-bottom: 4px; }
+    .plan-curr { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; color: var(--text-muted); }
+    .plan-amt { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; line-height: 1; }
+    .plan-period { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 24px; }
+    .plan-div { border: none; border-top: 1px solid #2a2a2a; margin: 22px 0; }
+    .plan-feats { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-bottom: 30px; }
+    .plan-feats li { font-size: 0.88rem; display: flex; gap: 10px; align-items: flex-start; }
+    .plan-feats li.yes { color: var(--white); }
+    .plan-feats li.no { color: #444; }
+    .plan-feats li .ck { flex-shrink: 0; font-size: 0.78rem; margin-top: 2px; }
+    .plan-feats li.yes .ck { color: var(--red); }
+    .plan-btn { display: block; width: 100%; text-align: center; padding: 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; border: none; transition: all 0.2s; }
+    .plan-btn.solid { background: var(--red); color: var(--white); }
+    .plan-btn.solid:hover { background: #f03327; }
+    .plan-btn.outline { background: transparent; color: var(--white); border: 1px solid #3a3a3a; }
+    .plan-btn.outline:hover { border-color: var(--white); }
+    .plan-note { text-align: center; margin-top: 26px; font-size: 0.8rem; color: var(--text-muted); }
+    .plan-note a { color: var(--white); }
+
+    /* CTA */
+    .cta-section { background: linear-gradient(135deg, rgba(217,48,37,0.18) 0%, transparent 60%), var(--steel); border-top: 1px solid #2a2a2a; text-align: center; padding: 100px 40px; position: relative; overflow: hidden; }
+    .cta-bg-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Bebas Neue', sans-serif; font-size: clamp(8rem, 20vw, 22rem); letter-spacing: 0.05em; color: rgba(255,255,255,0.02); white-space: nowrap; pointer-events: none; }
+    .cta-section h2 { position: relative; font-size: clamp(3.5rem, 7vw, 8rem); margin-bottom: 20px; }
+    .cta-section p { color: var(--text-muted); font-size: 1.05rem; max-width: 480px; margin: 0 auto 40px; line-height: 1.7; }
+
+    /* FOOTER */
+    footer { background: #050505; border-top: 1px solid #1a1a1a; padding: 50px 40px 30px; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; }
+    .footer-brand .logo { font-size: 1.8rem; display: block; margin-bottom: 14px; }
+    .footer-brand p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; max-width: 240px; }
+    .footer-col h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--red); margin-bottom: 18px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 10px; }
+    .footer-col a { font-size: 0.88rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-btm { background: #050505; border-top: 1px solid #1a1a1a; padding: 20px 40px; display: flex; justify-content: space-between; }
+    .footer-btm p { font-size: 0.78rem; color: #555; }
+
+    /* MODAL */
+    .overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--steel); border: 1px solid #2a2a2a; padding: 46px 42px; max-width: 450px; width: 100%; position: relative; transform: translateY(24px); transition: transform 0.3s; }
+    .overlay.open .modal { transform: translateY(0); }
+    .modal-x { position: absolute; top: 16px; right: 18px; background: none; border: none; color: #555; font-size: 1.3rem; cursor: pointer; transition: color 0.2s; }
+    .modal-x:hover { color: var(--white); }
+    .modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.06em; margin-bottom: 5px; }
+    .modal-sub { font-size: 0.84rem; color: var(--text-muted); margin-bottom: 26px; line-height: 1.6; }
+    .modal-plan { color: var(--red); font-family: 'Barlow Condensed', sans-serif; font-weight: 600; }
+    .fg { margin-bottom: 16px; }
+    .fg label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.76rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px; }
+    .fg input { width: 100%; background: var(--mid); border: 1px solid #333; color: var(--white); padding: 11px 13px; font-family: 'Barlow', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .fg input:focus { border-color: var(--red); }
+    .fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-submit { display: block; width: 100%; margin-top: 6px; padding: 14px; background: var(--red); color: var(--white); font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; }
+    .modal-submit:hover { background: #f03327; }
+    .modal-fine { font-size: 0.74rem; color: #555; text-align: center; margin-top: 12px; line-height: 1.6; }
+    .modal-fine a { color: var(--text-muted); }
+    .modal-ok { display: none; text-align: center; padding: 16px 0; }
+    .modal-ok.show { display: block; }
+    .modal-ok-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .modal-ok h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; color: var(--red); margin-bottom: 8px; }
+    .modal-ok p { font-size: 0.86rem; color: var(--text-muted); line-height: 1.7; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 960px) {
+      .programs-grid, .plan-grid, .testi-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .feature-split, .trial-wrapper { grid-template-columns: 1fr; }
+      footer { grid-template-columns: 1fr 1fr; }
+      nav ul { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">AP<span>E</span>X</a>
+  <ul>
+    <li><a href="#programs">Programs</a></li>
+    <li><a href="#trial">Free Trial</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#pricing" class="nav-cta">Join Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div style="position:relative;z-index:2;">
+    <p class="hero-tag">Est. 2018 · Elite Performance Training</p>
+    <h1>Break<em>Every</em>Limit</h1>
+    <p class="hero-sub">Science-backed training programs engineered for athletes who refuse to settle. Try a full workout free — no card required.</p>
+    <div class="hero-actions">
+      <a href="#trial" class="btn-primary">Try Free Workout</a>
+      <a href="#pricing" class="btn-ghost">See Pricing</a>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Strength Training</span><span>HIIT Conditioning</span><span>Athletic Performance</span>
+    <span>Recovery Science</span><span>Nutrition Coaching</span><span>Mental Toughness</span>
+    <span>Functional Movement</span><span>Elite Coaching</span>
+    <span>Strength Training</span><span>HIIT Conditioning</span><span>Athletic Performance</span>
+    <span>Recovery Science</span><span>Nutrition Coaching</span><span>Mental Toughness</span>
+    <span>Functional Movement</span><span>Elite Coaching</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item reveal"><div class="stat-num">12<span>K+</span></div><div class="stat-label">Athletes Trained</div></div>
+  <div class="stat-item reveal"><div class="stat-num">94<span>%</span></div><div class="stat-label">Goal Achievement Rate</div></div>
+  <div class="stat-item reveal"><div class="stat-num">8<span>+</span></div><div class="stat-label">Years of Excellence</div></div>
+  <div class="stat-item reveal"><div class="stat-num">38</div><div class="stat-label">World-Class Coaches</div></div>
+</div>
+
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="programs-header reveal">
+    <div><div class="section-label">Training Programs</div><h2>Choose Your<br>Battle</h2></div>
+    <a href="#pricing" class="btn-ghost">View Pricing</a>
+  </div>
+  <div class="programs-grid">
+    <div class="program-card reveal">
+      <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&q=80" alt="Strength & Power" loading="lazy"/>
+      <div class="program-info"><span class="program-tag">12 Weeks · Advanced</span><div class="program-name">Strength &amp; Power</div><div class="program-desc">Build raw, functional strength using progressive overload and compound movements. For those chasing personal records.</div></div>
+    </div>
+    <div class="program-card reveal">
+      <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=80" alt="HIIT Shred" loading="lazy"/>
+      <div class="program-info"><span class="program-tag">8 Weeks · All Levels</span><div class="program-name">HIIT Shred</div><div class="program-desc">Torch fat and build endurance with intense interval circuits designed to keep your metabolism fired for 48 hours.</div></div>
+    </div>
+    <div class="program-card reveal">
+      <img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=800&q=80" alt="Athletic Edge" loading="lazy"/>
+      <div class="program-info"><span class="program-tag">16 Weeks · Elite</span><div class="program-name">Athletic Edge</div><div class="program-desc">Elite sport-specific conditioning for competitive athletes. Speed, agility, power — all in one.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="background:var(--steel);">
+  <div class="feature-split">
+    <div class="feature-img reveal">
+      <img src="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?w=900&q=80" alt="APEX coaching" loading="lazy"/>
+    </div>
+    <div class="feature-content reveal">
+      <div class="section-label">Why APEX</div>
+      <h2>Training Backed By Science</h2>
+      <p>We don't do gimmicks. Every program is built on peer-reviewed sports science, biomechanics research, and real-world data from elite athletes.</p>
+      <div class="features-list">
+        <div class="feat"><div class="feat-icon">◆</div><div><div class="feat-text">Personalized Programming</div><div class="feat-sub">Tailored to your goals, schedule, and current fitness level</div></div></div>
+        <div class="feat"><div class="feat-icon">◆</div><div><div class="feat-text">Elite Certified Coaches</div><div class="feat-sub">NSCA, CSCS-certified professionals with real competition experience</div></div></div>
+        <div class="feat"><div class="feat-icon">◆</div><div><div class="feat-text">Performance Nutrition</div><div class="feat-sub">Integrated meal planning and macro guidance for maximum results</div></div></div>
+        <div class="feat"><div class="feat-icon">◆</div><div><div class="feat-text">24/7 Recovery Support</div><div class="feat-sub">Sleep, mobility, and HRV protocols built into every program</div></div></div>
+      </div>
+      <a href="#trial" class="btn-primary">Try Free Workout</a>
+    </div>
+  </div>
+</section>
+
+<!-- FREE TRIAL -->
+<section id="trial">
+  <div class="trial-wrapper">
+    <div class="trial-intro reveal">
+      <div class="section-label">Free Trial</div>
+      <h2>Experience APEX<br><span style="color:var(--red)">Free</span></h2>
+      <p>Try a complete APEX workout right here — no sign-up, no credit card. This is the exact coaching quality our members get every day.</p>
+      <ul class="trial-perks">
+        <li>Live countdown timers for each exercise</li>
+        <li>Real coach tips and form cues</li>
+        <li>5-exercise HIIT circuit — full session</li>
+        <li>Works on any device instantly</li>
+        <li>Unlock 200+ workouts when you upgrade</li>
+      </ul>
+      <a href="#pricing" class="btn-ghost">See full membership plans</a>
+    </div>
+
+    <div class="reveal">
+      <div class="workout-player" id="wp">
+        <div class="wp-header">
+          <span class="wp-title">Starter HIIT Circuit</span>
+          <span class="wp-badge">Free Preview</span>
+        </div>
+        <div class="wp-prog-wrap"><div class="wp-prog-bar" id="wpBar"></div></div>
+
+        <!-- Ex 1 -->
+        <div class="wp-exercise active" id="ex0">
+          <div class="wp-ex-num">Exercise 1 of 5</div>
+          <div class="wp-ex-name">Jumping Jacks</div>
+          <div class="wp-ex-detail">3 Sets · 45 Seconds · 15s Rest</div>
+          <div class="wp-timer-area">
+            <svg class="wp-svg" width="118" height="118" viewBox="0 0 118 118">
+              <circle class="wp-ring-bg" cx="59" cy="59" r="54"/>
+              <circle class="wp-ring-fg" id="r0" cx="59" cy="59" r="54"/>
+            </svg>
+            <div class="wp-timer-inner"><div class="wp-countdown" id="cd0">45</div><div class="wp-countdown-sub">seconds</div></div>
+          </div>
+          <div class="wp-tip"><strong>Coach's Tip:</strong> Core braced, land softly on the balls of your feet. Let your arms drive the rhythm.</div>
+          <div class="wp-controls">
+            <button class="wp-btn" onclick="skipEx()">Skip</button>
+            <button class="wp-btn go" id="sb0" onclick="startTimer(0,45)">Start</button>
+          </div>
+        </div>
+
+        <!-- Ex 2 -->
+        <div class="wp-exercise" id="ex1">
+          <div class="wp-ex-num">Exercise 2 of 5</div>
+          <div class="wp-ex-name">Push-Ups</div>
+          <div class="wp-ex-detail">3 Sets · 40 Seconds · 20s Rest</div>
+          <div class="wp-timer-area">
+            <svg class="wp-svg" width="118" height="118" viewBox="0 0 118 118">
+              <circle class="wp-ring-bg" cx="59" cy="59" r="54"/>
+              <circle class="wp-ring-fg" id="r1" cx="59" cy="59" r="54"/>
+            </svg>
+            <div class="wp-timer-inner"><div class="wp-countdown" id="cd1">40</div><div class="wp-countdown-sub">seconds</div></div>
+          </div>
+          <div class="wp-tip"><strong>Coach's Tip:</strong> Hands shoulder-width, chest within an inch of the floor. Lock out fully at the top.</div>
+          <div class="wp-controls">
+            <button class="wp-btn" onclick="skipEx()">Skip</button>
+            <button class="wp-btn go" id="sb1" onclick="startTimer(1,40)">Start</button>
+          </div>
+        </div>
+
+        <!-- Ex 3 -->
+        <div class="wp-exercise" id="ex2">
+          <div class="wp-ex-num">Exercise 3 of 5</div>
+          <div class="wp-ex-name">Bodyweight Squats</div>
+          <div class="wp-ex-detail">3 Sets · 50 Seconds · 20s Rest</div>
+          <div class="wp-timer-area">
+            <svg class="wp-svg" width="118" height="118" viewBox="0 0 118 118">
+              <circle class="wp-ring-bg" cx="59" cy="59" r="54"/>
+              <circle class="wp-ring-fg" id="r2" cx="59" cy="59" r="54"/>
+            </svg>
+            <div class="wp-timer-inner"><div class="wp-countdown" id="cd2">50</div><div class="wp-countdown-sub">seconds</div></div>
+          </div>
+          <div class="wp-tip"><strong>Coach's Tip:</strong> Feet hip-width, toes out slightly. Drive knees over toes and hit parallel or below.</div>
+          <div class="wp-controls">
+            <button class="wp-btn" onclick="skipEx()">Skip</button>
+            <button class="wp-btn go" id="sb2" onclick="startTimer(2,50)">Start</button>
+          </div>
+        </div>
+
+        <!-- Ex 4 -->
+        <div class="wp-exercise" id="ex3">
+          <div class="wp-ex-num">Exercise 4 of 5</div>
+          <div class="wp-ex-name">Plank Hold</div>
+          <div class="wp-ex-detail">2 Sets · 30 Seconds · 15s Rest</div>
+          <div class="wp-timer-area">
+            <svg class="wp-svg" width="118" height="118" viewBox="0 0 118 118">
+              <circle class="wp-ring-bg" cx="59" cy="59" r="54"/>
+              <circle class="wp-ring-fg" id="r3" cx="59" cy="59" r="54"/>
+            </svg>
+            <div class="wp-timer-inner"><div class="wp-countdown" id="cd3">30</div><div class="wp-countdown-sub">seconds</div></div>
+          </div>
+          <div class="wp-tip"><strong>Coach's Tip:</strong> Squeeze everything — glutes, abs, quads. Breathe steadily. No sagging hips.</div>
+          <div class="wp-controls">
+            <button class="wp-btn" onclick="skipEx()">Skip</button>
+            <button class="wp-btn go" id="sb3" onclick="startTimer(3,30)">Start</button>
+          </div>
+        </div>
+
+        <!-- Ex 5 -->
+        <div class="wp-exercise" id="ex4">
+          <div class="wp-ex-num">Exercise 5 of 5</div>
+          <div class="wp-ex-name">Burpees</div>
+          <div class="wp-ex-detail">2 Sets · 45 Seconds · 30s Rest</div>
+          <div class="wp-timer-area">
+            <svg class="wp-svg" width="118" height="118" viewBox="0 0 118 118">
+              <circle class="wp-ring-bg" cx="59" cy="59" r="54"/>
+              <circle class="wp-ring-fg" id="r4" cx="59" cy="59" r="54"/>
+            </svg>
+            <div class="wp-timer-inner"><div class="wp-countdown" id="cd4">45</div><div class="wp-countdown-sub">seconds</div></div>
+          </div>
+          <div class="wp-tip"><strong>Coach's Tip:</strong> Explode off the floor on every rep. The jump at the top should be max effort. Own it.</div>
+          <div class="wp-controls">
+            <button class="wp-btn" onclick="skipEx()">Skip</button>
+            <button class="wp-btn go" id="sb4" onclick="startTimer(4,45)">Start</button>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div class="wp-done" id="wpDone">
+          <div class="wp-done-icon">🔥</div>
+          <h3>Workout Complete!</h3>
+          <p>You just finished the APEX Starter Circuit. Imagine 200+ sessions like this, tailored to your goals and progressively getting harder.</p>
+          <div class="wp-done-actions">
+            <button class="btn-primary" onclick="openModal('Pro')">Unlock Full Access</button>
+            <button class="btn-ghost" onclick="resetWP()">Restart Workout</button>
+          </div>
+        </div>
+
+        <div class="wp-footer">
+          <div class="wp-dots" id="wpDots"></div>
+          <div class="wp-status" id="wpStatus">Ready to start</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="results" class="testimonials">
+  <div class="reveal"><div class="section-label">Athlete Results</div><h2>Real People.<br>Real Gains.</h2></div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-rating">★★★★★</div>
+      <p class="testi-quote">"I dropped 22 lbs and hit a 405 lb deadlift in 16 weeks. APEX changed how I think about training entirely."</p>
+      <div class="testi-author"><img class="testi-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" alt="Marcus T."/><div><div class="testi-name">Marcus T.</div><div class="testi-role">Strength Program · 16 Weeks</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-rating">★★★★★</div>
+      <p class="testi-quote">"As a competitive runner, I needed structure. APEX gave me a plan that got me a 4-minute PR in my next marathon."</p>
+      <div class="testi-author"><img class="testi-avatar" src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&q=80" alt="Sarah K."/><div><div class="testi-name">Sarah K.</div><div class="testi-role">Athletic Edge · 12 Weeks</div></div></div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-rating">★★★★★</div>
+      <p class="testi-quote">"I was skeptical of online coaching. Three months in, I've completely rebuilt my physique and my confidence."</p>
+      <div class="testi-author"><img class="testi-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Devon R."/><div><div class="testi-name">Devon R.</div><div class="testi-role">HIIT Shred · 8 Weeks</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="pricing-top reveal">
+    <div class="section-label" style="display:inline-block;">Membership Plans</div>
+    <h2>Invest In<br>Your Peak</h2>
+    <p>Flexible plans for every stage of your fitness journey. Start free, upgrade when you're ready.</p>
+    <div style="display:flex;justify-content:center;">
+      <div class="billing-toggle">
+        <div class="tog on" id="togM" onclick="setBill('monthly')">Monthly</div>
+        <div class="tog" id="togA" onclick="setBill('annual')">Annual <span class="save-tag">Save 30%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="plan-grid">
+    <!-- STARTER -->
+    <div class="plan reveal">
+      <div class="plan-name">Starter</div>
+      <div class="plan-desc">Perfect for beginners building consistency and learning the fundamentals of training.</div>
+      <div class="plan-strike" id="os"></div>
+      <div class="plan-price-row"><span class="plan-curr">$</span><span class="plan-amt" id="ps">19</span></div>
+      <div class="plan-period" id="pp">/ month</div>
+      <hr class="plan-div"/>
+      <ul class="plan-feats">
+        <li class="yes"><span class="ck">✔</span> 20+ beginner workouts</li>
+        <li class="yes"><span class="ck">✔</span> Nutrition basics guide</li>
+        <li class="yes"><span class="ck">✔</span> Progress tracking</li>
+        <li class="yes"><span class="ck">✔</span> Community access</li>
+        <li class="no"><span class="ck">✖</span> 1-on-1 coaching sessions</li>
+        <li class="no"><span class="ck">✖</span> Custom program design</li>
+        <li class="no"><span class="ck">✖</span> Priority support</li>
+      </ul>
+      <button class="plan-btn outline" onclick="openModal('Starter')">Get Started</button>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan hot reveal">
+      <div class="plan-pop">Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-desc">The complete APEX experience — full programs, coaching, and nutrition all in one place.</div>
+      <div class="plan-strike" id="op"></div>
+      <div class="plan-price-row"><span class="plan-curr">$</span><span class="plan-amt" id="pp2">49</span></div>
+      <div class="plan-period" id="pp3">/ month</div>
+      <hr class="plan-div"/>
+      <ul class="plan-feats">
+        <li class="yes"><span class="ck">✔</span> 200+ workouts across all levels</li>
+        <li class="yes"><span class="ck">✔</span> Full macro &amp; meal planning</li>
+        <li class="yes"><span class="ck">✔</span> Advanced progress analytics</li>
+        <li class="yes"><span class="ck">✔</span> Community + group challenges</li>
+        <li class="yes"><span class="ck">✔</span> 2 coaching sessions / month</li>
+        <li class="yes"><span class="ck">✔</span> Custom 12-week program</li>
+        <li class="no"><span class="ck">✖</span> Unlimited 1-on-1 sessions</li>
+      </ul>
+      <button class="plan-btn solid" onclick="openModal('Pro')">Get Started</button>
+    </div>
+
+    <!-- ELITE -->
+    <div class="plan reveal">
+      <div class="plan-name">Elite</div>
+      <div class="plan-desc">Dedicated coaching and fully personalized programming for competitive athletes.</div>
+      <div class="plan-strike" id="oe"></div>
+      <div class="plan-price-row"><span class="plan-curr">$</span><span class="plan-amt" id="pe">129</span></div>
+      <div class="plan-period" id="pp4">/ month</div>
+      <hr class="plan-div"/>
+      <ul class="plan-feats">
+        <li class="yes"><span class="ck">✔</span> Everything in Pro</li>
+        <li class="yes"><span class="ck">✔</span> Unlimited 1-on-1 coaching</li>
+        <li class="yes"><span class="ck">✔</span> Weekly program adjustments</li>
+        <li class="yes"><span class="ck">✔</span> Video form review &amp; feedback</li>
+        <li class="yes"><span class="ck">✔</span> Direct coach WhatsApp line</li>
+        <li class="yes"><span class="ck">✔</span> Competition prep support</li>
+        <li class="yes"><span class="ck">✔</span> Priority 24/7 support</li>
+      </ul>
+      <button class="plan-btn outline" onclick="openModal('Elite')">Get Started</button>
+    </div>
+  </div>
+
+  <p class="plan-note reveal">All plans include a <strong style="color:var(--white)">7-day free trial</strong>. Cancel anytime. No hidden fees. <a href="#">Full comparison →</a></p>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg-text">APEX</div>
+  <div class="reveal" style="position:relative;">
+    <div class="section-label" style="display:inline-block;">7-Day Free Trial</div>
+    <h2>Ready to<br><span style="color:var(--red)">Dominate?</span></h2>
+    <p>Start your free trial today. No credit card required for the first 7 days. Cancel anytime — no questions asked.</p>
+    <button class="btn-primary" onclick="openModal('Pro')">Start Free Trial</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <a href="#" class="logo">AP<span style="color:var(--red)">E</span>X</a>
+    <p>Elite performance training for athletes who demand more from themselves and their coaches.</p>
+  </div>
+  <div class="footer-col"><h4>Programs</h4><ul><li><a href="#">Strength & Power</a></li><li><a href="#">HIIT Shred</a></li><li><a href="#">Athletic Edge</a></li><li><a href="#">Nutrition Coaching</a></li><li><a href="#">Recovery Protocols</a></li></ul></div>
+  <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Our Coaches</a></li><li><a href="#">Science & Research</a></li><li><a href="#">Success Stories</a></li><li><a href="#">Careers</a></li></ul></div>
+  <div class="footer-col"><h4>Support</h4><ul><li><a href="#">FAQ</a></li><li><a href="#">Contact</a></li><li><a href="#">Community</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+</footer>
+<div class="footer-btm"><p>© 2026 APEX Performance. All rights reserved.</p><p>Built for those who never stop.</p></div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeBg(event)">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div id="mForm">
+      <h3>Start Your Trial</h3>
+      <p class="modal-sub">Signing up for <span class="modal-plan" id="mPlan">Pro</span> — your first 7 days are completely free.</p>
+      <div class="fg"><label>Full Name</label><input type="text" id="fName" placeholder="Alex Johnson"/></div>
+      <div class="fg"><label>Email Address</label><input type="email" id="fEmail" placeholder="alex@email.com"/></div>
+      <p style="font-size:0.82rem;color:#666;margin-bottom:14px;line-height:1.6;">You'll enter your payment details securely on the next screen via Stripe. No charge for 7 days.</p>
+      <button class="modal-submit" onclick="submitForm()">Start Free Trial — No Charge Today</button>
+      <p class="modal-fine">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>. Card saved for after trial period. Cancel anytime.</p>
+    </div>
+    <div class="modal-ok" id="mOk">
+      <div class="modal-ok-icon">🎉</div>
+      <h3>You're In!</h3>
+      <p>Welcome to APEX. Check your email for login details and your first workout plan. Trial started — no charge until day 8.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SCROLL REVEAL
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'), i*80); });
+}, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ── BILLING TOGGLE
+const prices = { monthly:{s:19,p:49,e:129}, annual:{s:13,p:34,e:90} };
+function setBill(m) {
+  document.getElementById('togM').classList.toggle('on', m==='monthly');
+  document.getElementById('togA').classList.toggle('on', m==='annual');
+  const pr = prices[m];
+  document.getElementById('ps').textContent = pr.s;
+  document.getElementById('pp2').textContent = pr.p;
+  document.getElementById('pe').textContent = pr.e;
+  const period = m==='annual' ? '/ month, billed annually' : '/ month';
+  ['pp','pp3','pp4'].forEach(id=>document.getElementById(id).textContent=period);
+  document.getElementById('os').textContent = m==='annual' ? '$'+prices.monthly.s+'/mo' : '';
+  document.getElementById('op').textContent = m==='annual' ? '$'+prices.monthly.p+'/mo' : '';
+  document.getElementById('oe').textContent = m==='annual' ? '$'+prices.monthly.e+'/mo' : '';
+}
+
+// ── MODAL
+let selectedPlan = 'Pro';
+function openModal(plan) {
+  selectedPlan = plan;
+  document.getElementById('mPlan').textContent = plan;
+  document.getElementById('mForm').style.display = 'block';
+  document.getElementById('mOk').classList.remove('show');
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeBg(e) { if(e.target===document.getElementById('overlay')) closeModal(); }
+function fmtCard(el) { let v=el.value.replace(/\D/g,'').substring(0,16); el.value=v.replace(/(.{4})/g,'$1 ').trim(); }
+function fmtExp(el) { let v=el.value.replace(/\D/g,'').substring(0,4); if(v.length>=3) v=v.substring(0,2)+' / '+v.substring(2); el.value=v; }
+async function submitForm() {
+  const n=document.getElementById('fName').value.trim();
+  const em=document.getElementById('fEmail').value.trim();
+  if(!n||!em){alert('Please enter your name and email.');return;}
+  const btn=document.querySelector('.modal-submit');
+  btn.textContent='Redirecting to checkout…';
+  btn.disabled=true;
+  try {
+    const res = await fetch('/api/checkout', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ plan: selectedPlan })
+    });
+    const data = await res.json();
+    if(data.url) { window.location.href = data.url; }
+    else { alert('Something went wrong. Please try again.'); btn.textContent='Start Free Trial — No Charge Today'; btn.disabled=false; }
+  } catch(e) {
+    alert('Connection error. Please try again.');
+    btn.textContent='Start Free Trial — No Charge Today';
+    btn.disabled=false;
+  }
+}
+
+// ── WORKOUT PLAYER
+const TOTAL = 5;
+const DURATIONS = [45,40,50,30,45];
+const CIRC = 2*Math.PI*54; // 339.3
+let curEx = 0, tInterval = null, tRunning = false;
+
+// Build dots
+(function buildDots(){
+  const c=document.getElementById('wpDots'); c.innerHTML='';
+  for(let i=0;i<TOTAL;i++){
+    const d=document.createElement('div');
+    d.className='wp-dot'+(i===0?' current':'');
+    d.id='dot'+i; c.appendChild(d);
+  }
+})();
+
+function updateBar(){ document.getElementById('wpBar').style.width=(curEx/TOTAL*100)+'%'; }
+
+function startTimer(idx, secs) {
+  if(tRunning) return;
+  tRunning=true;
+  const btn=document.getElementById('sb'+idx);
+  btn.textContent='Running…'; btn.disabled=true;
+  const ring=document.getElementById('r'+idx);
+  const lbl=document.getElementById('cd'+idx);
+  let rem=secs;
+  function tick(){
+    ring.style.strokeDashoffset = CIRC*(1-rem/secs);
+    lbl.textContent=rem;
+    document.getElementById('wpStatus').textContent=rem+'s remaining';
+    if(rem<=0){ clearInterval(tInterval); tRunning=false; setTimeout(nextEx,600); }
+    rem--;
+  }
+  tick(); tInterval=setInterval(tick,1000);
+}
+
+function nextEx(){
+  if(curEx<TOTAL-1){
+    document.getElementById('ex'+curEx).classList.remove('active');
+    document.getElementById('dot'+curEx).classList.remove('current');
+    document.getElementById('dot'+curEx).classList.add('done');
+    curEx++;
+    document.getElementById('ex'+curEx).classList.add('active');
+    document.getElementById('dot'+curEx).classList.add('current');
+    updateBar();
+    document.getElementById('wpStatus').textContent='Exercise '+(curEx+1)+' of '+TOTAL;
+  } else {
+    document.getElementById('ex'+curEx).classList.remove('active');
+    document.getElementById('dot'+curEx).classList.remove('current');
+    document.getElementById('dot'+curEx).classList.add('done');
+    document.getElementById('wpDone').classList.add('active');
+    document.getElementById('wpBar').style.width='100%';
+    document.getElementById('wpStatus').textContent='Workout complete!';
+    clearInterval(tInterval); tRunning=false;
+  }
+}
+
+function skipEx(){ clearInterval(tInterval); tRunning=false; nextEx(); }
+
+function resetWP(){
+  clearInterval(tInterval); tRunning=false;
+  document.getElementById('wpDone').classList.remove('active');
+  document.getElementById('ex'+curEx).classList.remove('active');
+  for(let i=0;i<TOTAL;i++){
+    const d=document.getElementById('dot'+i);
+    d.className='wp-dot'+(i===0?' current':'');
+    const sb=document.getElementById('sb'+i);
+    if(sb){sb.textContent='Start';sb.disabled=false;}
+    document.getElementById('r'+i).style.strokeDashoffset=0;
+    document.getElementById('cd'+i).textContent=DURATIONS[i];
+  }
+  curEx=0;
+  document.getElementById('ex0').classList.add('active');
+  document.getElementById('wpBar').style.width='0%';
+  document.getElementById('wpStatus').textContent='Ready to start';
+}
+</script>
+</body>
+</html>
