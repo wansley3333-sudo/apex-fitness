@@ -12,10 +12,18 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  const { plan } = req.body;
+
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) { body = {}; }
+  }
+
+  const plan = body && body.plan;
   const priceId = PRICE_IDS[plan];
-  if (!priceId) return res.status(400).json({ error: 'Invalid plan' });
-  const origin = req.headers.origin || 'https://apexfitness-pro.netlify.app';
+  if (!priceId) return res.status(400).json({ error: 'Invalid plan: ' + plan });
+
+  const origin = req.headers.origin || 'https://project-ahtzi.vercel.app';
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
@@ -23,10 +31,11 @@ module.exports = async (req, res) => {
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: { trial_period_days: 7 },
       success_url: `${origin}/success.html`,
-      cancel_url:  `${origin}/#pricing`,
+      cancel_url: `${origin}/#pricing`,
     });
     res.status(200).json({ url: session.url });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
