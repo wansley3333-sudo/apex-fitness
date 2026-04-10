@@ -653,6 +653,13 @@ function setBill(m) {
   document.getElementById('oe').textContent = m==='annual' ? '$'+prices.monthly.e+'/mo' : '';
 }
 
+// ── PAYMENT LINKS
+const PAYMENT_LINKS = {
+  Starter: 'https://buy.stripe.com/6oUaEX9OZ7iObhD0ak0RG00',
+  Pro:     'https://buy.stripe.com/dRm9AT7GRfPkdpLcX60RG01',
+  Elite:   'https://buy.stripe.com/14AfZh2mxfPk5Xj5uE0RG02',
+};
+
 // ── MODAL
 let selectedPlan = 'Pro';
 function openModal(plan) {
@@ -668,29 +675,13 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 function closeBg(e) { if(e.target===document.getElementById('overlay')) closeModal(); }
-function fmtCard(el) { let v=el.value.replace(/\D/g,'').substring(0,16); el.value=v.replace(/(.{4})/g,'$1 ').trim(); }
-function fmtExp(el) { let v=el.value.replace(/\D/g,'').substring(0,4); if(v.length>=3) v=v.substring(0,2)+' / '+v.substring(2); el.value=v; }
-async function submitForm() {
+function submitForm() {
   const n=document.getElementById('fName').value.trim();
   const em=document.getElementById('fEmail').value.trim();
   if(!n||!em){alert('Please enter your name and email.');return;}
-  const btn=document.querySelector('.modal-submit');
-  btn.textContent='Redirecting to checkout…';
-  btn.disabled=true;
-  try {
-    const res = await fetch('/api/checkout', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ plan: selectedPlan })
-    });
-    const data = await res.json();
-    if(data.url) { window.location.href = data.url; }
-    else { alert('Something went wrong. Please try again.'); btn.textContent='Start Free Trial — No Charge Today'; btn.disabled=false; }
-  } catch(e) {
-    alert('Connection error. Please try again.');
-    btn.textContent='Start Free Trial — No Charge Today';
-    btn.disabled=false;
-  }
+  const link = PAYMENT_LINKS[selectedPlan];
+  if(link) { window.location.href = link; }
+  else { alert('Something went wrong. Please try again.'); }
 }
 
 // ── WORKOUT PLAYER
